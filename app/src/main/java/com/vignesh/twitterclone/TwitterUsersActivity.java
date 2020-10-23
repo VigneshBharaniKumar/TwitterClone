@@ -157,5 +157,6 @@ public class TwitterUsersActivity extends AppCompatActivity implements TwitterUs
     @Override
     public void onClickUser(String selectedUser) {
 
+
     }
 }
