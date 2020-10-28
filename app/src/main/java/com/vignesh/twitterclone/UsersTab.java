@@ -2,15 +2,22 @@ package com.vignesh.twitterclone;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SearchView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -31,6 +38,8 @@ public class UsersTab extends Fragment implements TwitterUsersRecyclerAdapter.on
 
     private SweetAlertDialog alertDialog;
 
+    private TwitterUsersRecyclerAdapter adapter;
+
     public UsersTab() {
         // Required empty public constructor
     }
@@ -43,8 +52,7 @@ public class UsersTab extends Fragment implements TwitterUsersRecyclerAdapter.on
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        getActivity().setTitle("Following...");
     }
 
     @Override
@@ -55,6 +63,8 @@ public class UsersTab extends Fragment implements TwitterUsersRecyclerAdapter.on
 
         recyclerView = view.findViewById(R.id.recyclerView_twitterUsers);
         pullToRefreshLayout = view.findViewById(R.id.pullToRefreshLayout);
+
+        setHasOptionsMenu(true);
 
         refreshList();
 
@@ -89,7 +99,8 @@ public class UsersTab extends Fragment implements TwitterUsersRecyclerAdapter.on
                         users.add(user.getUsername());
                     }
 
-                    recyclerView.setAdapter(new TwitterUsersRecyclerAdapter(users, UsersTab.this));
+                    adapter = new TwitterUsersRecyclerAdapter(users, UsersTab.this);
+                    recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
                 } else {
@@ -110,6 +121,30 @@ public class UsersTab extends Fragment implements TwitterUsersRecyclerAdapter.on
 
     @Override
     public void onClickUser(String selectedUser) {
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_users_list, menu);
+
+        MenuItem search = menu.findItem(R.id.btnSearch_UsersMenu);
+        SearchView searchView = (SearchView) search.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
     }
 }

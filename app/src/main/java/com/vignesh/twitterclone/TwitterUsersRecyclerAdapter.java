@@ -3,6 +3,7 @@ package com.vignesh.twitterclone;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class TwitterUsersRecyclerAdapter extends RecyclerView.Adapter<TwitterUsersViewHolder> {
 
     private ArrayList<String> users;
+    private ArrayList<String> usersFull;
     private onClickUserInterface onClickUserInterface;
 
     private SweetAlertDialog alertDialog;
@@ -33,6 +35,8 @@ public class TwitterUsersRecyclerAdapter extends RecyclerView.Adapter<TwitterUse
     public TwitterUsersRecyclerAdapter(ArrayList<String> users, TwitterUsersRecyclerAdapter.onClickUserInterface onClickUserInterface) {
         this.users = users;
         this.onClickUserInterface = onClickUserInterface;
+
+        usersFull = new ArrayList<>(users);
     }
 
     @NonNull
@@ -96,4 +100,49 @@ public class TwitterUsersRecyclerAdapter extends RecyclerView.Adapter<TwitterUse
     public int getItemCount() {
         return users.size();
     }
+
+    public Filter getFilter() {
+        return usersFilter;
+    }
+
+    private Filter usersFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            ArrayList<String> filteredUsers = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+
+                filteredUsers.addAll(usersFull);
+
+            } else {
+
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (String user : usersFull) {
+
+                    if (user.toLowerCase().contains(filterPattern)) {
+
+                        filteredUsers.add(user);
+
+                    }
+
+                }
+
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredUsers;
+            return  results;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            users.clear();
+            users.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+
+        }
+    };
+
 }
