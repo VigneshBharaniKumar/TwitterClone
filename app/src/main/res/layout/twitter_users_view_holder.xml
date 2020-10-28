@@ -7,10 +7,6 @@
     android:layout_margin="2dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="@dimen/cardview_default_elevation"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     android:background="#00FFFFFF"
     android:outlineProvider="background"
     android:outlineAmbientShadowColor="@color/colorBlack">

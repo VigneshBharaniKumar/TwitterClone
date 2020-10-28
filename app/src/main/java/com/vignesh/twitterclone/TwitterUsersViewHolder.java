@@ -34,4 +34,5 @@ public class TwitterUsersViewHolder extends RecyclerView.ViewHolder {
     public CheckBox getCbFollow() {
         return cbFollow;
     }
+
 }
